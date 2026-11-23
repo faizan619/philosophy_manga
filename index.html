@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manga Book Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#111; --paper:#fbfaf6; --page:#e9e6dd; --muted:#555; --accent:#b3261e;
+  --sfx:'Bangers', Impact, 'Arial Black', sans-serif;
+  --talk:'Comic Neue', 'Comic Sans MS', 'Segoe Print', sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--talk);font-size:17px;line-height:1.4}
+.wrap{max-width:900px;margin:0 auto;padding:16px}
+.hero{background:var(--ink);color:#fff;border:4px solid var(--ink);padding:40px 20px 30px;text-align:center;position:relative;overflow:hidden;margin-bottom:26px}
+.hero::before{content:"";position:absolute;inset:-50%;background:repeating-conic-gradient(from 0deg,#ffffff14 0 3deg,transparent 3deg 9deg);pointer-events:none}
+.hero > *{position:relative}
+.hero .kicker{font-family:var(--sfx);letter-spacing:3px;font-size:clamp(18px,4vw,24px);color:#ddd}
+.hero h1{font-family:var(--sfx);font-size:clamp(46px,11vw,92px);letter-spacing:3px;margin:4px 0 0;line-height:1;text-shadow:4px 4px 0 var(--accent)}
+.hero p{max-width:540px;margin:14px auto 0;color:#ddd;font-size:15px}
+.section-title{font-family:var(--sfx);letter-spacing:2px;font-size:30px;margin:0 0 12px;display:flex;align-items:baseline;gap:10px}
+.section-title small{font-family:var(--talk);font-size:14px;letter-spacing:0;color:var(--muted);font-weight:700}
+.shelf{display:grid;gap:14px}
+/* accordion book */
+details.book{background:var(--paper);border:3px solid var(--ink);box-shadow:6px 6px 0 #0002}
+details.book > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:14px;padding:12px 14px;background:var(--ink);color:#fff;position:relative;overflow:hidden}
+details.book > summary::-webkit-details-marker{display:none}
+details.book > summary::before{content:"";position:absolute;inset:-60%;background:repeating-conic-gradient(from 0deg,#ffffff10 0 3deg,transparent 3deg 9deg);pointer-events:none}
+details.book > summary > *{position:relative}
+details.book > summary:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.mini svg{width:62px;height:62px;background:#f2f2f2;border-radius:12px;padding:5px;border:2px solid #fff;display:block}
+.head{display:flex;flex-direction:column;gap:2px;min-width:0}
+.head .author{font-family:var(--sfx);letter-spacing:2px;font-size:13px;color:#ccc}
+.head .name{font-family:var(--sfx);letter-spacing:2px;font-size:clamp(24px,5vw,32px);line-height:1;text-shadow:3px 3px 0 var(--accent)}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.pill{font-size:12px;font-weight:700;border:1.5px solid #fff;padding:1px 8px;background:transparent;color:#fff}
+.pill.on{background:#fff;color:var(--ink)}
+.chev{margin-left:auto;font-size:28px;transition:transform .2s}
+details.book[open] .chev{transform:rotate(180deg)}
+.book-body{padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.book-body .about{margin:0;color:#333;font-size:15.5px}
+.part{font-family:var(--sfx);letter-spacing:2px;font-size:20px;margin-top:6px;border-bottom:2px solid var(--ink)}
+.chapters{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:8px}
+.chapters a{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);border:2.5px solid var(--ink);background:#fff;padding:9px 12px;transition:transform .08s, box-shadow .08s}
+.chapters a:hover,.chapters a:focus-visible{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink);outline:none}
+.chapters .num{font-family:var(--sfx);font-size:26px;letter-spacing:1px;min-width:42px;text-align:center;background:var(--ink);color:#fff;padding:0 6px}
+.chapters .t{display:flex;flex-direction:column}
+.chapters .t b{font-size:17px}
+.chapters .t span{font-size:13px;color:var(--muted)}
+.chapters .go{margin-left:auto;font-family:var(--sfx);font-size:20px;letter-spacing:1px;white-space:nowrap}
+.soon{border:2.5px dashed #0005;padding:9px 12px;color:var(--muted);font-size:14px;text-align:center}
+footer{text-align:center;color:var(--muted);font-size:13px;margin:26px 0 10px}
+@media (max-width:640px){.mini svg{width:50px;height:50px}.chapters .go{display:none}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <symbol id="major" viewBox="0 0 100 100">
+    <g fill="#fff" stroke="#111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M24 32 L12 6 L40 22 Z"/><path d="M76 32 L88 6 L60 22 Z"/>
+      <path d="M22 30 L16 14 L32 24" fill="none" stroke-width="2"/><path d="M78 30 L84 14 L68 24" fill="none" stroke-width="2"/>
+      <ellipse cx="50" cy="54" rx="38" ry="33"/>
+      <path d="M17 66 Q14 80 26 84" fill="none"/><path d="M83 66 Q86 80 74 84" fill="none"/>
+      <path d="M42 30 Q50 26 58 30" fill="none" stroke-width="2"/><path d="M44 35 Q50 32 56 35" fill="none" stroke-width="2"/>
+      <path d="M27 43 Q35 37 44 42" fill="none" stroke-width="5"/><path d="M73 43 Q65 37 56 42" fill="none" stroke-width="5"/>
+      <path d="M30 50 Q36 46 43 50" fill="none"/><path d="M57 50 Q64 46 70 50" fill="none"/>
+      <circle cx="36.5" cy="52" r="2.6" fill="#111"/><circle cx="63.5" cy="52" r="2.6" fill="#111"/>
+      <ellipse cx="50" cy="70" rx="16" ry="12"/>
+      <ellipse cx="44.5" cy="70" rx="2.6" ry="3.8" fill="#111"/><ellipse cx="55.5" cy="70" rx="2.6" ry="3.8" fill="#111"/>
+      <path d="M36 77 Q24 74 25 58 Q30 68 39 71 Z"/><path d="M64 77 Q76 74 75 58 Q70 68 61 71 Z"/>
+    </g>
+  </symbol>
+</defs>
+</svg>
+
+<div class="wrap">
+
+<header class="hero">
+  <div class="kicker">MY</div>
+  <h1>MANGA LIBRARY</h1>
+  <p>Books I'm reading, retold chapter by chapter as manga to make them easier to understand. Tap a book to see its chapters.</p>
+</header>
+
+<h2 class="section-title">BOOKS <small>1 book · 10 chapters</small></h2>
+
+<div class="shelf">
+
+  <details class="book">
+    <summary>
+      <span class="mini"><svg><use href="#major"/></svg></span>
+      <span class="head"><span class="author">GEORGE ORWELL</span><span class="name">ANIMAL FARM</span>
+        <span class="meta"><span class="pill on">Complete</span><span class="pill">10 chapters</span><span class="pill">Fable · 1945</span></span></span>
+      <span class="chev" aria-hidden="true">▾</span>
+    </summary>
+    <div class="book-body">
+      <p class="about">The animals of Manor Farm are tired of working hard for a drunk, careless farmer. One night, old Major the boar tells them about his dream.</p>
+      <ul class="chapters">
+        <li>
+          <a href="animal_farm_manga/chapter_01_manga.html">
+            <span class="num">01</span>
+            <span class="t"><b>Old Major's Dream</b><span>The barn meeting, the call for Rebellion, and <i>Beasts of England</i></span></span>
+            <span class="go">READ →</span>
+          </a>
+        </li>
+        <li>
+          <a href="animal_farm_manga/chapter_02_manga.html">
+            <span class="num">02</span>
+            <span class="t"><b>The Rebellion</b><span>Snowball, Napoleon &amp; Squealer, Jones is driven out, and the Seven Commandments</span></span>
+            <span class="go">READ →</span>
+          </a>
+        </li>
+        <li>
+          <a href="animal_farm_manga/chapter_03_manga.html">
+            <span class="num">03</span>
+            <span class="t"><b>The First Harvest</b><span>Boxer's motto, Sunday Meetings, "Four legs good, two legs bad", and the milk and apples</span></span>
+            <span class="go">READ →</span>
+          </a>
+        </li>
+        <li>
+          <a href="animal_farm_manga/chapter_04_manga.html">
+            <span class="num">04</span>
+            <span class="t"><b>The Battle of the Cowshed</b><span>Jones attacks, Snowball's ambush, and Boxer's regret</span></span>
+            <span class="go">READ →</span>
+          </a>
+        </li>
+        <li>
+          <a href="animal_farm_manga/chapter_05_manga.html">
+            <span class="num">05</span>
+            <span class="t"><b>The Windmill Vote</b><span>Mollie leaves, Napoleon's dogs chase Snowball away, and the debates end</span></span>
+            <span class="go">READ →</span>
+          </a>
+        </li>
+        <li>
+          <a href="animal_farm_manga/chapter_06_manga.html">
+            <span class="num">06</span>
+            <span class="t"><b>Building the Windmill</b><span>Trade with humans, pigs in the beds, and the storm</span></span>
+            <span class="go">READ →</span>
+          </a>
+        </li>
+        <li>
+          <a href="animal_farm_manga/chapter_07_manga.html">
+            <span class="num">07</span>
+            <span class="t"><b>The Bitter Winter</b><span>Hunger, the hens' revolt, the confessions, and the song is banned</span></span>
+            <span class="go">READ →</span>
+          </a>
+        </li>
+        <li>
+          <a href="animal_farm_manga/chapter_08_manga.html">
+            <span class="num">08</span>
+            <span class="t"><b>The Battle of the Windmill</b><span>Napoleon the legend, the forged banknotes, the explosion, and the ladder</span></span>
+            <span class="go">READ →</span>
+          </a>
+        </li>
+        <li>
+          <a href="animal_farm_manga/chapter_09_manga.html">
+            <span class="num">09</span>
+            <span class="t"><b>Boxer</b><span>Less food, more parades, and the van</span></span>
+            <span class="go">READ →</span>
+          </a>
+        </li>
+        <li>
+          <a href="animal_farm_manga/chapter_10_manga.html">
+            <span class="num">10</span>
+            <span class="t"><b>Pig and Man</b><span>Years later: one Commandment, and one last card game</span></span>
+            <span class="go">READ →</span>
+          </a>
+        </li>
+      </ul>
+      <div class="soon">The End · book complete</div>
+    </div>
+  </details>
+
+</div>
+
+<footer>Made in my book_guide folder</footer>
+</div>
+<script>
+// remember which books were open
+document.querySelectorAll('details.book').forEach((d, i) => {
+  const k = 'lib-open-' + i;
+  try { if (localStorage.getItem(k) === '1') d.open = true; } catch (e) {}
+  d.addEventListener('toggle', () => { try { localStorage.setItem(k, d.open ? '1' : '0'); } catch (e) {} });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# Books not published
+/the_count_of_monte_cristo/
+/thousand_splendid_suns_manga/
+
+# Private notes and source material (book pages, PDFs, summaries)
+*.txt
+*.pdf
+*.epub
+*.jpg
+*.jpeg
+*.heic
+
+# Claude / editor / OS files
+CLAUDE.md
+.claude/
+.vscode/
+*.bak
+*.bak.js
+.DS_Store
+Thumbs.db
+desktop.ini
